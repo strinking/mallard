@@ -1,2 +1,8 @@
+# Python Bytecode Cache
+__pycache__/
+
+# Configuration File
+config.json
+
 # Python Virtual Environment
 venv/
