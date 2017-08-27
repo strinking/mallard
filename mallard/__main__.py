@@ -48,7 +48,7 @@ async def on_message(msg):
     if not mention_id_string or int(''.join(mention_id_string)) != bot.user.id:
         return
 
-    query_string = ''.join(content_list[1:])
+    query_string = ' '.join(content_list[1:])
     query_result = duckduckgo.get_zci(query_string)
     await msg.channel.send(embed=discord.Embed(
         title=f"DuckDuckGo: {query_string!r}",
