@@ -7,9 +7,8 @@ from the parent directory.
 """
 
 import html
-import json
 
-import duckduckpy
+import duckduckgo
 import discord
 
 from .util import CONFIG
@@ -50,25 +49,11 @@ async def on_message(msg):
         return
 
     query_string = ''.join(content_list[1:])
-    resp = duckduckpy.query(query_string)
-
-    if not resp.abstract_source or not resp.related_topics:
-        await msg.channel.send(embed=discord.Embed(
-            title="Sorry, no results.", colour=discord.Colour.orange()
-        ))
-    else:
-        embed = discord.Embed(colour=discord.Colour.orange())
-        embed.set_author(
-            name=f"DuckDuckGo: {resp.heading}",
-            url=f"https://duckduckgo.com/?q={html.escape(query_string)}"
-        )
-        for result in resp.related_topics:
-            if hasattr(result, 'first_url'):
-                url = result.first_url + '#' if result.first_url.endswith(')') else result.first_url
-                embed.add_field(
-                    name=url,
-                    value=result.text
-                )
-        await msg.channel.send(embed=embed)
+    query_result = duckduckgo.get_zci(query_string)
+    await msg.channel.send(embed=discord.Embed(
+        title=f"DuckDuckGo: {query_string!r}",
+        description=query_result,
+        colour=discord.Colour.orange()
+    ))
 
 bot.run(CONFIG['discord_token'])
