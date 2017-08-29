@@ -15,7 +15,7 @@ from .util import CONFIG
 
 
 bot = discord.Client()
-
+reference_list = ["@ddg", "@duck"]
 
 @bot.event
 async def on_ready():
@@ -44,8 +44,8 @@ async def on_message(msg):
         return
 
     mention_id_string = ''.join(c for c in content_list[0] if c.isdigit())
-    # The Bot was not mentioned
-    if not mention_id_string or int(''.join(mention_id_string)) != bot.user.id:
+    # The Bot was not mentioned or referenced
+    if not mention_id_string or int(''.join(mention_id_string)) != bot.user.id or content_list[0] in reference_list:
         return
 
     query_string = ' '.join(content_list[1:])
