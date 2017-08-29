@@ -1,0 +1,15 @@
+[Unit]
+Description=DuckDuckGo Discord bot by Programming
+After=network.target
+
+[Service]
+Type=simple
+User=mallard
+ExecStart=/home/mallard/dev/mallard/bin/python3 -m mallard
+WorkingDirectory=/home/mallard/dev/mallard
+Restart=always
+RestartSec=600
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target
