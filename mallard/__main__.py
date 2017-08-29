@@ -6,7 +6,9 @@ mallard by using
 from the parent directory.
 """
 
+from typing import Optional
 
+import aiohttp
 import duckduckgo
 import discord
 
@@ -34,6 +36,32 @@ def parse_int(s):
         return None
 
 
+async def try_follow_redirect(text: str) -> Optional[str]:
+    """
+    Attempts to open the given text as an URL.
+    Since the DuckDuckGo API sometimes returns
+    redirects instead of the actual links, for
+    example for the query !aw systemd, it only
+    returns an URL instead of anything else -
+    for convenience, it's nicer to have the
+    actual resulting URL instead of just an URL
+    to the redirect.
+
+    Returns:
+        Optional[str]:
+            `None` if the given text could not be opened,
+            or the link that the given text redirects to,
+            given that the text is a valid URL.
+    """
+
+    async with aiohttp.ClientSession() as cs:
+        try:
+            async with cs.get(text) as response:
+                return str(response.url)
+        except ValueError:
+            return None
+
+
 @bot.event
 async def on_message(msg):
     """
@@ -57,6 +85,11 @@ async def on_message(msg):
 
     query_string = ' '.join(content_list[1:])
     query_result = duckduckgo.get_zci(query_string)
+
+    redirect_result = await try_follow_redirect(query_result)
+    if redirect_result is not None:
+        query_result = redirect_result
+
     await msg.channel.send(embed=discord.Embed(
         title=f"DuckDuckGo: {query_string!r}",
         description=query_result,
