@@ -6,7 +6,6 @@ mallard by using
 from the parent directory.
 """
 
-import html
 
 import duckduckgo
 import discord
@@ -17,6 +16,7 @@ from .util import CONFIG
 bot = discord.Client()
 reference_list = ["@ddg", "@duck"]
 
+
 @bot.event
 async def on_ready():
     """
@@ -26,11 +26,13 @@ async def on_ready():
 
     print("Logged in.")
 
+
 def parse_int(s):
     try:
         return int(s)
     except ValueError:
         return None
+
 
 @bot.event
 async def on_message(msg):
