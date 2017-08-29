@@ -26,6 +26,11 @@ async def on_ready():
 
     print("Logged in.")
 
+def parse_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return None
 
 @bot.event
 async def on_message(msg):
@@ -45,7 +50,7 @@ async def on_message(msg):
 
     mention_id_string = ''.join(c for c in content_list[0] if c.isdigit())
     # The Bot was not mentioned or referenced
-    if not mention_id_string or int(''.join(mention_id_string)) != bot.user.id or content_list[0] in reference_list:
+    if not(parse_int(mention_id_string) == bot.user.id or content_list[0] in reference_list):
         return
 
     query_string = ' '.join(content_list[1:])
