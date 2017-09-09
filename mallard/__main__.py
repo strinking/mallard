@@ -36,6 +36,31 @@ def parse_int(s):
         return None
 
 
+def fix_links(response: str) -> str:
+    """
+    Fixes links in the message that end with a `)`
+    by simply appending a `#`. This is a fix for
+    Discord's somewhat broken Markdown formatting.
+
+    Arguments:
+        response : str
+            The response from `duckduckgo.get_zci`.
+
+    Returns:
+        str:
+            The original response with broken links
+            fixed so they render correctly in Discord's
+            Markdown and websites respond as expected.
+    """
+
+    def fix_link(word: str) -> str:
+        if word.startswith("http") and word.endswith(")"):
+            return word + "#"
+        return word
+
+    return ' '.join(map(fix_link, response.split()))
+
+
 async def try_follow_redirect(text: str) -> Optional[str]:
     """
     Attempts to open the given text as an URL.
@@ -92,7 +117,7 @@ async def on_message(msg):
 
     await msg.channel.send(embed=discord.Embed(
         title=f"DuckDuckGo: {query_string!r}",
-        description=query_result,
+        description=fix_links(query_result),
         colour=discord.Colour.orange()
     ))
 
