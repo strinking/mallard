@@ -6,7 +6,6 @@ mallard by using
 from the parent directory.
 """
 
-import json
 from typing import Optional
 
 import aiohttp
@@ -111,14 +110,13 @@ async def on_message(msg):
 
     query_string = ' '.join(content_list[1:])
     try:
-        query_result = duckduckgo.get_zci(query_string)
-    except json.JSONDecodeError as exc:
+        query_result = await duckduckgo.get_zci(query_string)
+    except ValueError as exc:
         await msg.channel.send(embed=discord.Embed(
-            title="🦆 Something went wrong 😢",
-            description=repr(exc),
+            title="🦆💢 Something went wrong",
+            description=repr(exc) + ' - check console for the full response.',
             colour=discord.Colour.red()
         ))
-        print(f"Encountered a JSONDecodeError for query {query_string}:\n{exc!r}")
     else:
         redirect_result = await try_follow_redirect(query_result)
         if redirect_result is not None:
