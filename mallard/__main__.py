@@ -50,11 +50,13 @@ if __name__ == '__main__':
     log_hndl.setFormatter(log_fmtr)
     log_level = (logging.DEBUG if args.debug else logging.INFO)
 
-    main_logger = logging.getLogger('mallard', log_level)
+    main_logger = logging.getLogger('mallard')
+    main_logger.setLevel(log_level)
     main_logger.addHandler(log_hndl)
 
     if args.ddg_logs:
-        ddg_logger = logging.getLogger('duckduckgo', log_level)
+        ddg_logger = logging.getLogger('duckduckgo')
+        ddg_logger.setLevel(log_level)
         ddg_logger.addHandler(log_hndl)
 
     if not args.quiet:
@@ -75,5 +77,5 @@ if __name__ == '__main__':
         config['bot']['token'] = args.token
 
     # Create and run client
-    client = Client()
+    client = Client(config)
     client.run(token=config['bot']['token'])

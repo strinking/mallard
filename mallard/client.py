@@ -15,7 +15,7 @@ import logging
 import re
 import traceback
 
-import aiohttp
+from typing import Optional
 import discord
 import duckduckgo
 
@@ -51,7 +51,7 @@ DISCORD_COLORS = {
     'teal',
 }
 
-def _get_color(color):
+def _get_color(color) -> discord.Color:
     if color is None:
         return discord.Color.default()
     elif isinstance(color, str):
@@ -71,11 +71,6 @@ def _get_color(color):
             return discord.Color.default()
 
 class Client(discord.Client):
-    __slots__ = (
-        'mentions',
-        'color',
-    )
-
     def __init__(self, config):
         discord.Client.__init__(self)
         self.mentions = config['mentions']
@@ -107,7 +102,7 @@ class Client(discord.Client):
         if not message.content:
             return None
 
-        parts = content.split()
+        parts = message.content.split()
         mention = parts[0]
         query = ' '.join(parts[1:])
 
