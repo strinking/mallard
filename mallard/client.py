@@ -146,7 +146,7 @@ class Client(discord.Client):
             result = await try_follow_redirect(result, default=result)
             query = query.replace("`", "'")
 
-            embed.title = f"`{query}`"
+            embed.title = f"`Query: {query}`"
             embed.description = result
             embed.color = self.color
 
