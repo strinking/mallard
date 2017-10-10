@@ -126,6 +126,7 @@ class Client(discord.Client):
 
         logger.info(f"Received DDG search: '{query}'")
 
+        # pylint: disable=assigning-non-slot
         embed = discord.Embed(type='rich')
         embed.timestamp = datetime.now()
         embed.set_footer(
