@@ -10,5 +10,7 @@
 # WITHOUT ANY WARRANTY. See the LICENSE file for more details.
 #
 
+__version__ = '0.2.0'
+
 from .client import Client
 from .config import load_config
