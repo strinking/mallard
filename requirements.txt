@@ -7,4 +7,4 @@ ratelimit>=1.4.0
 websockets>=3.0
 yarl>=0.12.0
 git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]
--e git+https://github.com/strinking/python-duckduckgo@async#egg=duckduckgo-async
+-e git+https://github.com/strinking/python-duckduckgo@master#egg=duckduckgo-async
