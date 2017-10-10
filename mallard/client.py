@@ -16,7 +16,7 @@ import logging
 import re
 import traceback
 
-import aiohttp
+from typing import Optional
 import discord
 import duckduckgo
 
