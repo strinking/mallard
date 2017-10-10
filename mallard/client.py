@@ -120,7 +120,7 @@ class Client(discord.Client):
         logger.debug(f"Received message event for {message.id}")
 
         query = self._clean(message)
-        if query is None:
+        if not query:
             logger.debug("Not a query. Ignoring.")
             return
 
