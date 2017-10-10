@@ -1,0 +1,14 @@
+---
+
+mentions:
+  - '@ddg'
+  - '@DDG'
+  - '@duck'
+  - '@quack'
+  - '@mallard'
+
+color: dark_teal
+
+bot:
+  username: MyGreatBot#1000
+  token: 'MMMMMMMMMMMMMMMMMMMMMMMM.AAAAAA.BBBBBBBBBBBBBBBBBBBBBBBBBBB'

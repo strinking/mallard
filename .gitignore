@@ -9,7 +9,7 @@ src/
 *.log
 
 # Secret data
-config*.yaml
+/config*.yaml
 
 # Deployment
 venv/
