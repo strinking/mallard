@@ -78,4 +78,4 @@ if __name__ == '__main__':
 
     # Create and run client
     client = Client(config)
-    client.run(token=config['bot']['token'])
+    client.run(config['bot']['token'])

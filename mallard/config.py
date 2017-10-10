@@ -21,10 +21,10 @@ def load_config(path):
         return ValueError("Configuration file doesn't specify bot token")
 
     # Optional fields
-    if not isinstance(obj.getattr('mentions', None), list):
+    if not isinstance(obj.get('mentions', None), list):
         obj['mentions'] = []
 
-    if hasattr(obj, 'colour') and not hasattr(obj, 'color'):
+    if 'colour' in obj and 'color' not in obj:
         obj['color'] = obj['colour']
 
     return obj

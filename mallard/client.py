@@ -74,7 +74,7 @@ class Client(discord.Client):
     def __init__(self, config):
         discord.Client.__init__(self)
         self.mentions = config['mentions']
-        self.color = _get_color(config.getattr('color', None))
+        self.color = _get_color(config.get('color', None))
 
     async def on_ready(self):
         """
@@ -87,13 +87,13 @@ class Client(discord.Client):
             await self.change_presence(game=game)
 
         guilds = len(self.guilds)
-        channels = len(self.get_all_channels())
+        channels = sum(1 for _ in self.get_all_channels())
         users = len(self.users)
 
         logger.info("Connected to:")
-        logger.info(f" {guilds} guild{plural(guilds)}")
-        logger.info(f" {channels} channel{plural(channels)}")
-        logger.info(f" {users} user{plural(users)}")
+        logger.info(f" - {guilds} guild{plural(guilds)}")
+        logger.info(f" - {channels} channel{plural(channels)}")
+        logger.info(f" - {users} user{plural(users)}")
         logger.info("Ready! \U0001f986")
 
     def _clean(self, message) -> Optional[str]:
@@ -129,7 +129,7 @@ class Client(discord.Client):
         embed = discord.Embed(type='rich')
         embed.timestamp = datetime.now()
         embed.set_footer(
-                text=f"Searched by {message.author.mention}",
+                text=f"Requested by {message.author.display_name}",
                 icon_url=message.author.avatar_url,
         )
 
@@ -145,7 +145,7 @@ class Client(discord.Client):
             result = await try_follow_redirect(result, default=result)
             query = query.replace("`", "'")
 
-            embed.title = f"DuckDuckGo: `{query}`"
+            embed.title = f"`{query}`"
             embed.description = result
             embed.color = self.color
 
