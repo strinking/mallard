@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Dependencies
+src/
+
 # Secret data
 config*.yaml
 
