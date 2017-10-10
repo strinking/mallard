@@ -1,8 +1,15 @@
-# Python Bytecode Cache
+# Binaries
 __pycache__/
+*.py[cod]
 
-# Configuration File
-config.json
+# Secret data
+config*.yaml
 
-# Python Virtual Environment
+# Deployment
 venv/
+
+# Misc
+*~
+*.bak
+.*.swp
+
