@@ -11,11 +11,12 @@
 #
 
 from datetime import datetime
+from typing import Optional
 import logging
 import re
 import traceback
 
-from typing import Optional
+import aiohttp
 import discord
 import duckduckgo
 
