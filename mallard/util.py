@@ -1,5 +1,5 @@
 #
-# (FILENAME)
+# util.py
 #
 # mallard - DDG Instant Answers bot for the Programming Server
 # Copyright (c) 2017 Ammon Smith et al.
@@ -10,3 +10,8 @@
 # WITHOUT ANY WARRANTY. See the LICENSE file for more details.
 #
 
+def plural(n) -> str:
+    if n == 1:
+        return ''
+    else:
+        return 's'
