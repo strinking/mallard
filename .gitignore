@@ -6,6 +6,9 @@ __pycache__/
 # Logging
 *.log
 
+# Dependencies
+src/
+
 # Secret data
 /config*.yaml
 
