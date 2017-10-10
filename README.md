@@ -4,7 +4,7 @@ A Discord Bot for the Programming Server, meant as an easy interface to the [Duc
 Available under the MIT License.
 
 ### Setup
-To get started, simply install the dependencies:
+To get started, install the dependencies:
 ```sh
 $ python3.6 -m pip install -r requirements.txt
 ```
