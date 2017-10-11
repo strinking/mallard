@@ -2,7 +2,7 @@
 # client.py
 #
 # mallard - DDG Instant Answers bot for the Programming Server
-# Copyright (c) 2017 Ammon Smith et al.
+# Copyright (c) 2017 Johannes Christ, Ammon Smith et al.
 #
 # mallard is available free of charge under the terms of the MIT
 # License. You are free to redistribute and/or modify it under those
@@ -72,7 +72,7 @@ def _get_color(color) -> discord.Color:
 
 class Client(discord.Client):
     def __init__(self, config):
-        discord.Client.__init__(self)
+        super().__init__()
         self.mentions = config['mentions']
         self.color = _get_color(config.get('color', None))
 

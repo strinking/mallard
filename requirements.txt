@@ -6,5 +6,5 @@ multidict>=3.1.0
 ratelimit>=1.4.0
 websockets>=3.0
 yarl>=0.12.0
-git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]
+git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py
 -e git+https://github.com/strinking/python-duckduckgo@master#egg=duckduckgo-async
