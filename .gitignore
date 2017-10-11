@@ -1,6 +1,7 @@
 # Artifacts
 __pycache__/
 *.py[cod]
+/src/
 
 # Logging
 *.log
