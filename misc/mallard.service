@@ -5,11 +5,10 @@ After=network.target
 [Service]
 Type=simple
 User=mallard
-ExecStart=/home/mallard/dev/mallard/bin/python3 -m mallard
-WorkingDirectory=/home/mallard/dev/mallard
+ExecStart=/usr/bin/env python3.6 -m mallard
+WorkingDirectory=/home/mallard/repo
 Restart=always
 RestartSec=600
-StandardOutput=journal+console
 
 [Install]
 WantedBy=multi-user.target

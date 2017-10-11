@@ -1,0 +1,22 @@
+language: python
+dist: trusty
+
+python:
+  - '3.6'
+  - 'nightly'
+
+sudo: false
+
+cache: pip
+
+install:
+  - pip install --requirement requirements.txt
+  - pip install pylint
+
+script:
+  - pylint mallard
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

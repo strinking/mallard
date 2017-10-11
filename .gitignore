@@ -1,8 +1,21 @@
-# Python Bytecode Cache
+# Artifacts
 __pycache__/
+*.py[cod]
 
-# Configuration File
-config.json
+# Dependencies
+src/
 
-# Python Virtual Environment
+# Logging
+*.log
+
+# Secret data
+/config*.yaml
+
+# Deployment
 venv/
+
+# Misc
+*~
+*.bak
+.*.swp
+

@@ -1,13 +1,18 @@
 # Mallard
 A Discord Bot for the Programming Server, meant as an easy interface to the [DuckDuckGo Instant Answers API](https://duckduckgo.com/api)
 
+Available under the MIT License.
 
 ### Setup
-To get started, simply install the requirements by running the following:
+To get started, simply install the dependencies:
 ```sh
-$ pip3 install -r requirements.txt
+$ python3.6 -m pip install -r requirements.txt
 ```
 
+Then run the bot:
+```sh
+$ python3.6 -m mallard [config-file.yaml]
+```
 
 ### Disclaimer
 Mallard is not affiliated or endorsed by DuckDuckGo, and does not reflect the views or opinions of DuckDuckGo.
