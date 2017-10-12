@@ -16,7 +16,6 @@ import logging
 import re
 import traceback
 
-from typing import Optional
 import discord
 import duckduckgo
 
