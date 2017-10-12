@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=mallard
-ExecStart=/usr/bin/env python3.6 -m mallard
+ExecStart=/usr/bin/env python3.6 -m mallard config.yaml
 WorkingDirectory=/home/mallard/repo
 Restart=always
 RestartSec=600
