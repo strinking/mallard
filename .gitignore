@@ -6,6 +6,12 @@ __pycache__/
 # Logging
 *.log
 
+# Dependencies
+src/
+
+# Logging
+*.log
+
 # Secret data
 /config*.yaml
 
@@ -16,4 +22,3 @@ venv/
 *~
 *.bak
 .*.swp
-

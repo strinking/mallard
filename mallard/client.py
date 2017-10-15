@@ -11,20 +11,23 @@
 #
 
 from datetime import datetime
+from typing import Optional
 import logging
 import re
 import traceback
 
-from typing import Optional
 import discord
 import duckduckgo
 
+from . import __name__, __version__
 from .url import try_follow_redirect
 from .util import plural
 
 logger = logging.getLogger('mallard')
 
 USER_MENTION_REGEX = re.compile(r'<@!?([0-9]+)>')
+MAWARE_COLOR = discord.Color.from_rgb(0xff, 0xb7, 0xc5)
+MEGANE_URL = "https://media.discordapp.net/attachments/320121669563842560/351817511823605770/Megane1.png"
 DISCORD_COLORS = {
     'default',
     'blue',
@@ -124,6 +127,14 @@ class Client(discord.Client):
             logger.debug("Not a query. Ignoring.")
             return
 
+        if query in ('help', 'info'):
+            await self.bot_info(message.channel)
+        elif query in ('megane', 'maware'):
+            await self.megane_easter_egg(message.channel)
+        else:
+            await self.search(query, message)
+
+    async def search(self, query, message):
         logger.info(f"Received DDG search: '{query}'")
 
         # pylint: disable=assigning-non-slot
@@ -151,3 +162,35 @@ class Client(discord.Client):
             embed.color = self.color
 
         await message.channel.send(embed=embed)
+
+    async def bot_info(self, channel):
+        logger.info("Displaying bot info.")
+
+        usage = (
+            "To use me, just do an `@` mention or use one of the "
+            "above, then tell me what you want to know about!"
+        )
+
+        embed = discord.Embed(type='rich', color=discord.Color.dark_purple())
+        embed.title = self.user.display_name
+        embed.description = '\n'.join((
+            f"**{__name__} version {__version__}**",
+            f"Created by members of the Programming Server.",
+            "",
+            "Enabled mentions for this server:",
+            '\n'.join(f'\\* `{mention}`' for mention in self.mentions),
+            "",
+            usage,
+        ))
+        embed.add_field(name="GitHub", value="https://github.com/strinking/mallard", inline=True)
+        embed.add_field(name="Discord Server", value="https://discord.gg/010z0Kw1A9ql5c1Qe", inline=True)
+        embed.set_thumbnail(url=self.user.avatar_url)
+        await channel.send(embed=embed)
+
+    async def megane_easter_egg(self, channel):
+        logger.info("Displaying qt megane grilz.")
+
+        embed = discord.Embed(type='rich', color=MAWARE_COLOR)
+        embed.set_footer(text=":)")
+        embed.set_image(url=MEGANE_URL)
+        await channel.send(embed=embed)
