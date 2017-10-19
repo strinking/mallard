@@ -25,6 +25,7 @@ from .url import try_follow_redirect
 from .util import plural
 
 logger = logging.getLogger('mallard')
+rl_logger = logging.getLogger('mallard.ratelimit')
 
 USER_MENTION_REGEX = re.compile(r'<@!?([0-9]+)>')
 MAWARE_COLOR = discord.Color.from_rgb(0xff, 0xb7, 0xc5)
@@ -79,7 +80,9 @@ class Client(discord.Client):
         super().__init__()
         self.mentions = config['mentions']
         self.color = _get_color(config.get('color', None))
-        self.rl = duckduckgo.Ratelimit(2, 10)
+        count = config['ratelimit']['queries']
+        every = config['ratelimit']['per_seconds']
+        self.rl = duckduckgo.Ratelimit(count, every)
 
     async def on_ready(self):
         """
@@ -137,7 +140,7 @@ class Client(discord.Client):
             await self.search(query, message)
 
     async def search(self, query, message):
-        logger.info(f"Received DDG search: '{query}'")
+        logger.info(f"Received DDG search from {message.author.display_name}: '{query}'")
 
         # pylint: disable=assigning-non-slot
         embed = discord.Embed(type='rich')
@@ -154,6 +157,9 @@ class Client(discord.Client):
                     result = await duckduckgo.zci(query)
                 else:
                     # This guild has hit the rate limit
+                    user = f"{message.author.name}#{message.author.discriminator}"
+                    logger.info(f"Rate limited! (guild: {message.guild.name}, user: {user})")
+                    rl_logger.info(f"Guild: {message.guild.id}, User: {message.author.id}")
                     await message.add_reaction(self.clock_emoji())
                     return
 

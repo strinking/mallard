@@ -37,6 +37,9 @@ if __name__ == '__main__':
     argparser.add_argument('-C', '--color', '--colour',
             dest='color',
             help="Override the embed color used by the bot.")
+    argparser.add_argument('-l', '--ratelimit-log',
+            dest='ratelimit_log',
+            help="Override the ratelimit log file used by the bot.")
     argparser.add_argument('-T', '--token',
             dest='token',
             help="Override the bot token used to log in.")
@@ -53,6 +56,10 @@ if __name__ == '__main__':
     main_logger = logging.getLogger('mallard')
     main_logger.setLevel(log_level)
     main_logger.addHandler(log_hndl)
+
+    ratelimit_logger = logging.getLogger('mallard.ratelimit')
+    ratelimit_logger.setLevel(logging.INFO)
+    ratelimit_logger.addHandler(log_hndl)
 
     if args.ddg_logs:
         ddg_logger = logging.getLogger('duckduckgo')
@@ -75,6 +82,16 @@ if __name__ == '__main__':
 
     if args.token is not None:
         config['bot']['token'] = args.token
+
+    if args.ratelimit_log is not None:
+        config['ratelimit']['log'] = args.ratelimit_log
+
+    # Special logging
+    path = config['ratelimit']['log']
+    if path is not None:
+        ratelimit_hndl = logging.FileHandler(filename=path, mode='a')
+        ratelimit_hndl.setFormatter(logging.Formatter('%(message)s'))
+        ratelimit_logger.addHandler(ratelimit_hndl)
 
     # Create and run client
     client = Client(config)

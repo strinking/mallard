@@ -18,7 +18,10 @@ def load_config(path):
 
     # Required fields
     if not isinstance(obj['bot']['token'], str):
-        return ValueError("Configuration file doesn't specify bot token")
+        raise ValueError("Configuration file doesn't specify bot token")
+
+    if 'ratelimit' not in obj:
+        raise ValueError("Configuration file doesn't specify ratelimit information")
 
     # Optional fields
     if not isinstance(obj.get('mentions', None), list):
