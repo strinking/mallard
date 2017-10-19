@@ -11,6 +11,7 @@
 #
 
 from datetime import datetime
+from random import randint
 from typing import Optional
 import logging
 import re
@@ -153,7 +154,7 @@ class Client(discord.Client):
                     result = await duckduckgo.zci(query)
                 else:
                     # This guild has hit the rate limit
-                    await message.add_reaction('\U0001f557')
+                    await message.add_reaction(self.clock_emoji())
                     return
 
         except ValueError:
@@ -203,3 +204,7 @@ class Client(discord.Client):
         embed.set_footer(text=":)")
         embed.set_image(url=MEGANE_URL)
         await channel.send(embed=embed)
+
+    @staticmethod
+    def clock_emoji():
+        return chr(randint(0x1f550, 0x1f567))
