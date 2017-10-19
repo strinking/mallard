@@ -12,6 +12,7 @@
 
 import argparse
 import logging
+import os
 import sys
 
 from .client import Client
@@ -37,6 +38,9 @@ if __name__ == '__main__':
     argparser.add_argument('-C', '--color', '--colour',
             dest='color',
             help="Override the embed color used by the bot.")
+    argparser.add_argument('-l', '--ratelimit-log',
+            dest='ratelimit_log',
+            help="Override the ratelimit log file used by the bot.")
     argparser.add_argument('-T', '--token',
             dest='token',
             help="Override the bot token used to log in.")
@@ -76,6 +80,18 @@ if __name__ == '__main__':
     if args.token is not None:
         config['bot']['token'] = args.token
 
+    if args.ratelimit_log is not None:
+        config['ratelimit']['log'] = args.ratelimit_log
+
+    # Special logging
+    path = config['ratelimit']['log']
+    if path is not None:
+        if not os.path.isfile(path):
+            ratelimit_handle = open(path, 'w')
+            ratelimit_handle.write("guild_id,user_id\n")
+        else:
+            ratelimit_handle = open(path, 'a')
+
     # Create and run client
-    client = Client(config)
+    client = Client(config, ratelimit_handle)
     client.run(config['bot']['token'])

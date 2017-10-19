@@ -11,6 +11,7 @@
 #
 
 from datetime import datetime
+from random import randint
 from typing import Optional
 import logging
 import re
@@ -74,10 +75,17 @@ def _get_color(color) -> discord.Color:
             return discord.Color.default()
 
 class Client(discord.Client):
-    def __init__(self, config):
+    def __init__(self, config, ratelimit_handle):
         super().__init__()
         self.mentions = config['mentions']
         self.color = _get_color(config.get('color', None))
+        count = config['ratelimit']['queries']
+        every = config['ratelimit']['per_seconds']
+        self.rl = duckduckgo.Ratelimit(count, every)
+        self.rl_handle = ratelimit_handle
+
+    def __del__(self):
+        self.rl_handle.close()
 
     async def on_ready(self):
         """
@@ -135,7 +143,7 @@ class Client(discord.Client):
             await self.search(query, message)
 
     async def search(self, query, message):
-        logger.info(f"Received DDG search: '{query}'")
+        logger.info(f"Received DDG search from {message.author.display_name}: '{query}'")
 
         # pylint: disable=assigning-non-slot
         embed = discord.Embed(type='rich')
@@ -146,7 +154,18 @@ class Client(discord.Client):
         )
 
         try:
-            result = await duckduckgo.get_zci(query)
+            with self.rl.try_run(message.guild.id) as ok:
+                if ok:
+                    # Ok to send query
+                    result = await duckduckgo.zci(query)
+                else:
+                    # This guild has hit the rate limit
+                    user = f"{message.author.name}#{message.author.discriminator}"
+                    logger.info(f"Rate limited! (guild: {message.guild.name}, user: {user})")
+                    self.rl_handle.write(f"{message.guild.id},{message.author.id}\n")
+                    await message.add_reaction(self.clock_emoji())
+                    return
+
         except ValueError:
             logger.error("Error fetching DDG search results", exc_info=True)
 
@@ -194,3 +213,7 @@ class Client(discord.Client):
         embed.set_footer(text=":)")
         embed.set_image(url=MEGANE_URL)
         await channel.send(embed=embed)
+
+    @staticmethod
+    def clock_emoji():
+        return chr(randint(0x1f550, 0x1f567))
