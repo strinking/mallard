@@ -12,7 +12,7 @@ color: dark_teal
 ratelimit:
   queries: 2
   per_seconds: 10
-  log: ratelimit_violations.log
+  log: ratelimit_violations.csv
 
 bot:
   username: MyGreatBot#1000

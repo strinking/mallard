@@ -12,6 +12,7 @@
 
 import argparse
 import logging
+import os
 import sys
 
 from .client import Client
@@ -57,10 +58,6 @@ if __name__ == '__main__':
     main_logger.setLevel(log_level)
     main_logger.addHandler(log_hndl)
 
-    ratelimit_logger = logging.getLogger('mallard.ratelimit')
-    ratelimit_logger.setLevel(logging.INFO)
-    ratelimit_logger.addHandler(log_hndl)
-
     if args.ddg_logs:
         ddg_logger = logging.getLogger('duckduckgo')
         ddg_logger.setLevel(log_level)
@@ -89,10 +86,12 @@ if __name__ == '__main__':
     # Special logging
     path = config['ratelimit']['log']
     if path is not None:
-        ratelimit_hndl = logging.FileHandler(filename=path, mode='a')
-        ratelimit_hndl.setFormatter(logging.Formatter('%(message)s'))
-        ratelimit_logger.addHandler(ratelimit_hndl)
+        if not os.path.isfile(path):
+            ratelimit_handle = open(path, 'w')
+            ratelimit_handle.write("guild_id,user_id\n")
+        else:
+            ratelimit_handle = open(path, 'a')
 
     # Create and run client
-    client = Client(config)
+    client = Client(config, ratelimit_handle)
     client.run(config['bot']['token'])
