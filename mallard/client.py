@@ -78,6 +78,7 @@ class Client(discord.Client):
         super().__init__()
         self.mentions = config['mentions']
         self.color = _get_color(config.get('color', None))
+        self.rl = duckduckgo.Ratelimit(2, 10)
 
     async def on_ready(self):
         """
@@ -146,7 +147,15 @@ class Client(discord.Client):
         )
 
         try:
-            result = await duckduckgo.get_zci(query)
+            with self.rl.try_run(message.guild.id) as ok:
+                if ok:
+                    # Ok to send query
+                    result = await duckduckgo.get_zci(query)
+                else:
+                    # This guild has hit the rate limit
+                    await message.add_reaction('\U0001f557')
+                    return
+
         except ValueError:
             logger.error("Error fetching DDG search results", exc_info=True)
 
