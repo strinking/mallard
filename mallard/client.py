@@ -26,6 +26,7 @@ from .util import plural
 
 logger = logging.getLogger('mallard')
 
+PROGRAMMING_GUILD_ID = 181866934353133570
 USER_MENTION_REGEX = re.compile(r'<@!?([0-9]+)>')
 MAWARE_COLOR = discord.Color.from_rgb(0xff, 0xb7, 0xc5)
 MEGANE_URL = "https://media.discordapp.net/attachments/320121669563842560/351817511823605770/Megane1.png"
@@ -202,7 +203,8 @@ class Client(discord.Client):
             usage,
         ))
         embed.add_field(name="GitHub", value="https://github.com/strinking/mallard", inline=True)
-        embed.add_field(name="Discord Server", value="https://discord.gg/010z0Kw1A9ql5c1Qe", inline=True)
+        if channel.guild.id != PROGRAMMING_GUILD_ID:
+            embed.add_field(name="Discord Server", value="https://discord.gg/010z0Kw1A9ql5c1Qe", inline=True)
         embed.set_thumbnail(url=self.user.avatar_url)
         await channel.send(embed=embed)
 
