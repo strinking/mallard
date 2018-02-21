@@ -20,7 +20,7 @@ python3.6 -m pip install -r "$repo_dir/requirements.txt"
 echo "Installed Python dependencies"
 
 install -m644 "$repo_dir/misc/mallard.service" /usr/local/lib/systemd/system/mallard.service
-chown root:root /etc/systemd/system/mallard.service
+chown root:root /usr/local/lib/systemd/system/mallard.service
 echo "Installed systemd service"
 
 systemctl daemon-reload
