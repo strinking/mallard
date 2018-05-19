@@ -15,3 +15,15 @@ def plural(n) -> str:
         return ''
     else:
         return 's'
+
+class DummyGuild:
+    __slots__ = (
+        'id',
+        'name',
+    )
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+NO_GUILD = DummyGuild(id=0, name="(none)")

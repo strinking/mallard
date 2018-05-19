@@ -22,7 +22,7 @@ import duckduckgo
 
 from . import __name__, __version__
 from .url import try_follow_redirect
-from .util import plural
+from .util import NO_GUILD, plural
 
 logger = logging.getLogger('mallard')
 
@@ -155,15 +155,16 @@ class Client(discord.Client):
         )
 
         try:
-            with self.rl.try_run(message.guild.id) as ok:
+            guild = message.guild or NO_GUILD
+            with self.rl.try_run(guild.id) as ok:
                 if ok:
                     # Ok to send query
                     result = await duckduckgo.zci(query)
                 else:
                     # This guild has hit the rate limit
                     user = f"{message.author.name}#{message.author.discriminator}"
-                    logger.info(f"Rate limited! (guild: {message.guild.name}, user: {user})")
-                    self.rl_handle.write(f"{message.guild.id},{message.author.id}\n")
+                    logger.info(f"Rate limited! (guild: {guild.name}, user: {user})")
+                    self.rl_handle.write(f"{guild.id},{message.author.id}\n")
                     await message.add_reaction(self.clock_emoji())
                     return
 
@@ -203,7 +204,7 @@ class Client(discord.Client):
             usage,
         ))
         embed.add_field(name="GitHub", value="https://github.com/strinking/mallard", inline=True)
-        if channel.guild.id != PROGRAMMING_GUILD_ID:
+        if getattr(channel.guild, 'id', 0) != PROGRAMMING_GUILD_ID:
             embed.add_field(name="Discord Server", value="https://discord.gg/010z0Kw1A9ql5c1Qe", inline=True)
         embed.set_thumbnail(url=self.user.avatar_url)
         await channel.send(embed=embed)
