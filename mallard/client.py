@@ -95,8 +95,8 @@ class Client(discord.Client):
         """
 
         if self.mentions:
-            game = discord.Game(name=self.mentions[0])
-            await self.change_presence(game=game)
+            game = discord.Game(name=self.mentions[0], start=None, end=None)
+            await self.change_presence(activity=game)
 
         guilds = len(self.guilds)
         channels = sum(1 for _ in self.get_all_channels())
