@@ -1,17 +1,21 @@
 language: python
 dist: trusty
+sudo: false
+cache: pip
 
 python:
   - '3.6'
+  - '3.7-dev'
   - 'nightly'
 
-sudo: false
-
-cache: pip
+matrix:
+  allow_failures:
+    - python: nightly
+  fast_finish: true
 
 install:
-  - pip install --requirement requirements.txt
   - pip install pylint
+  - pip install -r requirements.txt
 
 script:
   - pylint mallard
