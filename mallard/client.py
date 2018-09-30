@@ -63,7 +63,7 @@ def _get_color(color) -> discord.Color:
         if color in DISCORD_COLORS:
             return getattr(discord.Color, color)()
         else:
-            logger.error(f"Color not recognized: '{color}'")
+            logger.error("Color not recognized: '%s'", color)
             return discord.Color.default()
     else:
         try:
@@ -72,7 +72,7 @@ def _get_color(color) -> discord.Color:
             b = int(color['b'])
             return discord.Color.from_rgb(r, g, b)
         except (KeyError, ValueError) as _:
-            logger.error(f"Bad RGB color in config")
+            logger.error("Bad RGB color in config")
             return discord.Color.default()
 
 class Client(discord.Client):
@@ -103,9 +103,9 @@ class Client(discord.Client):
         users = len(self.users)
 
         logger.info("Connected to:")
-        logger.info(f" - {guilds} guild{plural(guilds)}")
-        logger.info(f" - {channels} channel{plural(channels)}")
-        logger.info(f" - {users} user{plural(users)}")
+        logger.info(" - %d guild%s", guilds, plural(guilds))
+        logger.info(" - %d channel%s", channels, plural(channels))
+        logger.info(" - %d user%s", users, plural(users))
         logger.info("Ready! \U0001f986")
 
     def _clean(self, message) -> Optional[str]:
@@ -129,7 +129,7 @@ class Client(discord.Client):
         return None
 
     async def on_message(self, message):
-        logger.debug(f"Received message event for {message.id}")
+        logger.debug("Received message event for %d", message.id)
 
         query = self._clean(message)
         if not query:
@@ -144,7 +144,7 @@ class Client(discord.Client):
             await self.search(query, message)
 
     async def search(self, query, message):
-        logger.info(f"Received DDG search from {message.author.display_name}: '{query}'")
+        logger.info("Received DDG search from %s: '%s'", message.author.display_name, query)
 
         # pylint: disable=assigning-non-slot
         embed = discord.Embed(type='rich')
@@ -163,7 +163,7 @@ class Client(discord.Client):
                 else:
                     # This guild has hit the rate limit
                     user = f"{message.author.name}#{message.author.discriminator}"
-                    logger.info(f"Rate limited! (guild: {guild.name}, user: {user})")
+                    logger.info("Rate limited! (guild: %s, user: %s)", guild.name, user)
                     self.rl_handle.write(f"{guild.id},{message.author.id}\n")
                     await message.add_reaction(self.clock_emoji())
                     return
