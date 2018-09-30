@@ -9,6 +9,12 @@ fi
 repo_dir="$(dirname "$0")"
 dest_dir=~mallard/repo
 
+if [[ -f "$repo_dir/misc/mallard.service" ]]; then
+	service="$repo_dir/mallard.service"
+else
+	service="$repo_dir/misc/mallard.service"
+fi
+
 rm -rf "$dest_dir"
 mkdir -p "$dest_dir"
 cp -a "$repo_dir" "$dest_dir"
@@ -19,11 +25,10 @@ echo "Installed source code to '$dest_dir'"
 python3.6 -m pip install -r "$repo_dir/requirements.txt"
 echo "Installed Python dependencies"
 
-install -m644 "$repo_dir/misc/mallard.service" /usr/local/lib/systemd/system/mallard.service
+install -m644 "$service" /usr/local/lib/systemd/system/mallard.service
 chown root:root /usr/local/lib/systemd/system/mallard.service
 echo "Installed systemd service"
 
 systemctl daemon-reload
 systemctl restart mallard.service
 echo "Started mallard systemd service"
-

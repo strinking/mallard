@@ -13,8 +13,9 @@ src/
 # Logging
 *.log
 
-# Secret data
+# Configuration
 /config*.yaml
+/mallard.service
 
 # Deployment
 venv/
