@@ -168,7 +168,7 @@ class Client(discord.Client):
                     await message.add_reaction(self.clock_emoji())
                     return
 
-        except DuckDuckGoError:
+        except duckduckgo.DuckDuckGoError:
             logger.warning("Query did not succeed", exc_info=True)
 
             embed.title = f"Query: `{query}`"
