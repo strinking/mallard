@@ -168,7 +168,13 @@ class Client(discord.Client):
                     await message.add_reaction(self.clock_emoji())
                     return
 
-        except ValueError:
+        except DuckDuckGoError:
+            logger.warning("Query did not succeed", exc_info=True)
+
+            embed.title = f"Query: `{query}`"
+            embed.description = "No results."
+            embed.color = discord.Color.red()
+        except:
             logger.error("Error fetching DDG search results", exc_info=True)
 
             embed.title = "\U0001f986\U0001f4a2 Something went wrong!"
