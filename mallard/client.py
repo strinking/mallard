@@ -182,7 +182,6 @@ class Client(discord.Client):
             embed.color = discord.Color.red()
         else:
             (result, result_type) = zci_result
-            logger.info("%s %s", result, result_type)
             if result_type == 'exclusive':
                 logger.debug("Trying to follow %s", result)
                 result = await try_follow_redirect(result, default=result)
