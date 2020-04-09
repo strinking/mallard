@@ -35,7 +35,9 @@ async def try_follow_redirect(url: str, default: str = None) -> Optional[str]:
             argument, that is returned instead.
     """
 
-    async with aiohttp.ClientSession() as session:
+    headers = {"User-Agent": "Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/601.6 (KHTML, like Gecko) NF/4.0.0.10.7 NintendoBrowser/5.2.1.17381"}
+    
+    async with aiohttp.ClientSession(headers=headers) as session:
         try:
             async with session.get(url) as response:
                 return str(response.url)
