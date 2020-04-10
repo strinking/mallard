@@ -159,7 +159,7 @@ class Client(discord.Client):
             with self.rl.try_run(guild.id) as ok:
                 if ok:
                     # Ok to send query
-                    zci_result = await duckduckgo.zci_extra(query)
+                    zci_result = await duckduckgo.zci_with_type(query)
                 else:
                     # This guild has hit the rate limit
                     user = f"{message.author.name}#{message.author.discriminator}"
