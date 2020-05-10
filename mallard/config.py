@@ -12,22 +12,23 @@
 
 import yaml
 
+
 def load_config(path):
-    with open(path, 'r') as fh:
+    with open(path, "r") as fh:
         obj = yaml.safe_load(fh)
 
     # Required fields
-    if not isinstance(obj['bot']['token'], str):
+    if not isinstance(obj["bot"]["token"], str):
         raise ValueError("Configuration file doesn't specify bot token")
 
-    if 'ratelimit' not in obj:
+    if "ratelimit" not in obj:
         raise ValueError("Configuration file doesn't specify ratelimit information")
 
     # Optional fields
-    if not isinstance(obj.get('mentions', None), list):
-        obj['mentions'] = []
+    if not isinstance(obj.get("mentions", None), list):
+        obj["mentions"] = []
 
-    if 'colour' in obj and 'color' not in obj:
-        obj['color'] = obj['colour']
+    if "colour" in obj and "color" not in obj:
+        obj["color"] = obj["colour"]
 
     return obj

@@ -24,37 +24,38 @@ from . import __name__, __version__
 from .url import try_follow_redirect
 from .util import NO_GUILD, plural
 
-logger = logging.getLogger('mallard')
+logger = logging.getLogger("mallard")
 
 PROGRAMMING_GUILD_ID = 181866934353133570
-USER_MENTION_REGEX = re.compile(r'<@!?([0-9]+)>')
-MAWARE_COLOR = discord.Color.from_rgb(0xff, 0xb7, 0xc5)
+USER_MENTION_REGEX = re.compile(r"<@!?([0-9]+)>")
+MAWARE_COLOR = discord.Color.from_rgb(0xFF, 0xB7, 0xC5)
 MEGANE_URL = "https://media.discordapp.net/attachments/320121669563842560/351817511823605770/Megane1.png"
 DISCORD_COLORS = {
-    'default',
-    'blue',
-    'blurple',
-    'dark_blue',
-    'dark_gold',
-    'dark_green',
-    'dark_grey',
-    'dark_magenta',
-    'dark_orange',
-    'dark_purple',
-    'dark_red',
-    'dark_teal',
-    'darker_grey',
-    'gold',
-    'green',
-    'greyple',
-    'light_grey',
-    'lighter_grey',
-    'magenta',
-    'orange',
-    'purple',
-    'red',
-    'teal',
+    "default",
+    "blue",
+    "blurple",
+    "dark_blue",
+    "dark_gold",
+    "dark_green",
+    "dark_grey",
+    "dark_magenta",
+    "dark_orange",
+    "dark_purple",
+    "dark_red",
+    "dark_teal",
+    "darker_grey",
+    "gold",
+    "green",
+    "greyple",
+    "light_grey",
+    "lighter_grey",
+    "magenta",
+    "orange",
+    "purple",
+    "red",
+    "teal",
 }
+
 
 def _get_color(color) -> discord.Color:
     if color is None:
@@ -67,21 +68,22 @@ def _get_color(color) -> discord.Color:
             return discord.Color.default()
     else:
         try:
-            r = int(color['r'])
-            g = int(color['g'])
-            b = int(color['b'])
+            r = int(color["r"])
+            g = int(color["g"])
+            b = int(color["b"])
             return discord.Color.from_rgb(r, g, b)
         except (KeyError, ValueError) as _:
             logger.error("Bad RGB color in config")
             return discord.Color.default()
 
+
 class Client(discord.Client):
     def __init__(self, config, ratelimit_handle):
         super().__init__()
-        self.mentions = config['mentions']
-        self.color = _get_color(config.get('color', None))
-        count = config['ratelimit']['queries']
-        every = config['ratelimit']['per_seconds']
+        self.mentions = config["mentions"]
+        self.color = _get_color(config.get("color", None))
+        count = config["ratelimit"]["queries"]
+        every = config["ratelimit"]["per_seconds"]
         self.rl = duckduckgo.Ratelimit(count, every)
         self.rl_handle = ratelimit_handle
 
@@ -116,7 +118,7 @@ class Client(discord.Client):
 
         parts = message.content.split()
         mention = parts[0]
-        query = ' '.join(parts[1:])
+        query = " ".join(parts[1:])
 
         match = USER_MENTION_REGEX.match(mention)
         if match is not None:
@@ -136,22 +138,24 @@ class Client(discord.Client):
             logger.debug("Not a query. Ignoring.")
             return
 
-        if query in ('help', 'info'):
+        if query in ("help", "info"):
             await self.bot_info(message.channel)
-        elif query in ('megane', 'maware'):
+        elif query in ("megane", "maware"):
             await self.megane_easter_egg(message.channel)
         else:
             await self.search(query, message)
 
     async def search(self, query, message):
-        logger.info("Received DDG search from %s: '%s'", message.author.display_name, query)
+        logger.info(
+            "Received DDG search from %s: '%s'", message.author.display_name, query
+        )
 
         # pylint: disable=assigning-non-slot
-        embed = discord.Embed(type='rich')
+        embed = discord.Embed(type="rich")
         embed.timestamp = datetime.now()
         embed.set_footer(
-                text=f"Requested by {message.author.display_name}",
-                icon_url=message.author.avatar_url,
+            text=f"Requested by {message.author.display_name}",
+            icon_url=message.author.avatar_url,
         )
 
         try:
@@ -198,31 +202,39 @@ class Client(discord.Client):
             "above, then tell me what you want to know about!"
         )
 
-        embed = discord.Embed(type='rich', color=discord.Color.dark_purple())
+        embed = discord.Embed(type="rich", color=discord.Color.dark_purple())
         embed.title = self.user.display_name
-        embed.description = '\n'.join((
-            f"**{__name__} version {__version__}**",
-            f"Created by members of the Programming Server.",
-            "",
-            "Enabled mentions for this server:",
-            '\n'.join(f'\\* `{mention}`' for mention in self.mentions),
-            "",
-            usage,
-        ))
-        embed.add_field(name="GitHub", value="https://github.com/strinking/mallard", inline=True)
-        if getattr(channel.guild, 'id', 0) != PROGRAMMING_GUILD_ID:
-            embed.add_field(name="Discord Server", value="https://discord.gg/010z0Kw1A9ql5c1Qe", inline=True)
+        embed.description = "\n".join(
+            (
+                f"**{__name__} version {__version__}**",
+                f"Created by members of the Programming Server.",
+                "",
+                "Enabled mentions for this server:",
+                "\n".join(f"\\* `{mention}`" for mention in self.mentions),
+                "",
+                usage,
+            )
+        )
+        embed.add_field(
+            name="GitHub", value="https://github.com/strinking/mallard", inline=True
+        )
+        if getattr(channel.guild, "id", 0) != PROGRAMMING_GUILD_ID:
+            embed.add_field(
+                name="Discord Server",
+                value="https://discord.gg/010z0Kw1A9ql5c1Qe",
+                inline=True,
+            )
         embed.set_thumbnail(url=self.user.avatar_url)
         await channel.send(embed=embed)
 
     async def megane_easter_egg(self, channel):
         logger.info("Displaying qt megane grilz.")
 
-        embed = discord.Embed(type='rich', color=MAWARE_COLOR)
+        embed = discord.Embed(type="rich", color=MAWARE_COLOR)
         embed.set_footer(text=":)")
         embed.set_image(url=MEGANE_URL)
         await channel.send(embed=embed)
 
     @staticmethod
     def clock_emoji():
-        return chr(randint(0x1f550, 0x1f567))
+        return chr(randint(0x1F550, 0x1F567))

@@ -18,48 +18,69 @@ import sys
 from .client import Client
 from .config import load_config
 
-LOG_FILE = 'mallard.log'
-LOG_FILE_MODE = 'w'
+LOG_FILE = "mallard.log"
+LOG_FILE_MODE = "w"
 LOG_FORMAT = "[%(levelname)s] %(name)s: %(message)s"
 LOG_DATE_FORMAT = "[%d/%m/%Y %H:%M:%S]"
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Parse arguments
     argparser = argparse.ArgumentParser(description="DuckDuckGo Discord bot")
-    argparser.add_argument('-q', '--quiet',
-            dest='quiet', action='store_true',
-            help="Be quiet: only output errors")
-    argparser.add_argument('-d', '--debug', '--verbose',
-            dest='debug', action='store_true',
-            help="Enable debug logging.")
-    argparser.add_argument('-D', '--ddg-logs',
-            dest='ddg_logs', action='store_true',
-            help="Enable logs for the DuckDuckGo library.")
-    argparser.add_argument('-C', '--color', '--colour',
-            dest='color',
-            help="Override the embed color used by the bot.")
-    argparser.add_argument('-l', '--ratelimit-log',
-            dest='ratelimit_log',
-            help="Override the ratelimit log file used by the bot.")
-    argparser.add_argument('-T', '--token',
-            dest='token',
-            help="Override the bot token used to log in.")
-    argparser.add_argument('config_file',
-            help="Specify a configuration file to use. Keep it secret!")
+    argparser.add_argument(
+        "-q",
+        "--quiet",
+        dest="quiet",
+        action="store_true",
+        help="Be quiet: only output errors",
+    )
+    argparser.add_argument(
+        "-d",
+        "--debug",
+        "--verbose",
+        dest="debug",
+        action="store_true",
+        help="Enable debug logging.",
+    )
+    argparser.add_argument(
+        "-D",
+        "--ddg-logs",
+        dest="ddg_logs",
+        action="store_true",
+        help="Enable logs for the DuckDuckGo library.",
+    )
+    argparser.add_argument(
+        "-C",
+        "--color",
+        "--colour",
+        dest="color",
+        help="Override the embed color used by the bot.",
+    )
+    argparser.add_argument(
+        "-l",
+        "--ratelimit-log",
+        dest="ratelimit_log",
+        help="Override the ratelimit log file used by the bot.",
+    )
+    argparser.add_argument(
+        "-T", "--token", dest="token", help="Override the bot token used to log in."
+    )
+    argparser.add_argument(
+        "config_file", help="Specify a configuration file to use. Keep it secret!"
+    )
     args = argparser.parse_args()
 
     # Set up logging
     log_fmtr = logging.Formatter(LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
     log_hndl = logging.FileHandler(filename=LOG_FILE, mode=LOG_FILE_MODE)
     log_hndl.setFormatter(log_fmtr)
-    log_level = (logging.DEBUG if args.debug else logging.INFO)
+    log_level = logging.DEBUG if args.debug else logging.INFO
 
-    main_logger = logging.getLogger('mallard')
+    main_logger = logging.getLogger("mallard")
     main_logger.setLevel(log_level)
     main_logger.addHandler(log_hndl)
 
     if args.ddg_logs:
-        ddg_logger = logging.getLogger('duckduckgo')
+        ddg_logger = logging.getLogger("duckduckgo")
         ddg_logger.setLevel(log_level)
         ddg_logger.addHandler(log_hndl)
 
@@ -75,23 +96,23 @@ if __name__ == '__main__':
     config = load_config(args.config_file)
 
     if args.color is not None:
-        config['color'] = args.color
+        config["color"] = args.color
 
     if args.token is not None:
-        config['bot']['token'] = args.token
+        config["bot"]["token"] = args.token
 
     if args.ratelimit_log is not None:
-        config['ratelimit']['log'] = args.ratelimit_log
+        config["ratelimit"]["log"] = args.ratelimit_log
 
     # Special logging
-    path = config['ratelimit']['log']
+    path = config["ratelimit"]["log"]
     if path is not None:
         if not os.path.isfile(path):
-            ratelimit_handle = open(path, 'w')
+            ratelimit_handle = open(path, "w")
             ratelimit_handle.write("guild_id,user_id\n")
         else:
-            ratelimit_handle = open(path, 'a')
+            ratelimit_handle = open(path, "a")
 
     # Create and run client
     client = Client(config, ratelimit_handle)
-    client.run(config['bot']['token'])
+    client.run(config["bot"]["token"])

@@ -10,20 +10,23 @@
 # WITHOUT ANY WARRANTY. See the LICENSE file for more details.
 #
 
+
 def plural(n) -> str:
     if n == 1:
-        return ''
+        return ""
     else:
-        return 's'
+        return "s"
+
 
 class DummyGuild:
     __slots__ = (
-        'id',
-        'name',
+        "id",
+        "name",
     )
 
     def __init__(self, id, name):
         self.id = id
         self.name = name
+
 
 NO_GUILD = DummyGuild(id=0, name="(none)")

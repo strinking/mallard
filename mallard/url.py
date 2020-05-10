@@ -14,6 +14,7 @@ from typing import Optional
 
 import aiohttp
 
+
 async def try_follow_redirect(url: str, default: str = None) -> Optional[str]:
     """
     Attempts to open the given text as an URL.
