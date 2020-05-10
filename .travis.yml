@@ -1,23 +1,36 @@
 language: python
-dist: trusty
-sudo: false
-cache: pip
+dist: xenial
+os: linux
+
+stages:
+  - black
+  - test
 
 python:
   - '3.6'
-  - '3.7-dev'
+  - '3.7'
+  - '3.8'
+  - '3.8-dev'
   - 'nightly'
 
-matrix:
+jobs:
+  include:
+    - stage: black
+      python: '3.8'
+      script:
+        - black --check futaba
   allow_failures:
-    - python: nightly
+    - python: 'nightly'
   fast_finish: true
 
+cache: pip
+
 install:
-  - pip install pylint
   - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
 
 script:
+  # Dispaly all lints and a report
   - pylint --reports=yes mallard
 
 notifications:
