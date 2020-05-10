@@ -18,7 +18,7 @@ jobs:
     - stage: black
       python: '3.8'
       script:
-        - black --check futaba
+        - black --check mallard
   allow_failures:
     - python: 'nightly'
   fast_finish: true
