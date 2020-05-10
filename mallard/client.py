@@ -207,7 +207,7 @@ class Client(discord.Client):
         embed.description = "\n".join(
             (
                 f"**{__name__} version {__version__}**",
-                f"Created by members of the Programming Server.",
+                "Created by members of the Programming Server.",
                 "",
                 "Enabled mentions for this server:",
                 "\n".join(f"\\* `{mention}`" for mention in self.mentions),
