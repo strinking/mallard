@@ -55,6 +55,7 @@ DISCORD_COLORS = {
     "red",
     "teal",
 }
+UNICODE_WASTEBASKET = "\N{WASTEBASKET}"
 
 
 def _get_color(color) -> discord.Color:
@@ -77,6 +78,23 @@ def _get_color(color) -> discord.Color:
             return discord.Color.default()
 
 
+class QueryOwners:
+    def __init__(self, capacity: int = 50):
+        self.relationships = []
+        self.capacity = capacity
+
+    def push(self, item):
+        self.relationships.insert(0, item)
+        if len(self.relationships) > self.capacity:
+            self.relationships.pop()
+
+    def remove(self, item):
+        try:
+            self.relationships.remove(item)
+        except ValueError:
+            logger.error("Item not found in QueryOwners, can't remove")
+
+
 class Client(discord.Client):
     def __init__(self, config, ratelimit_handle):
         super().__init__()
@@ -86,7 +104,7 @@ class Client(discord.Client):
         every = config["ratelimit"]["per_seconds"]
         self.rl = duckduckgo.Ratelimit(count, every)
         self.rl_handle = ratelimit_handle
-        self.query_authors = []
+        self.query_owners = QueryOwners(50)
 
     def __del__(self):
         self.rl_handle.close()
@@ -149,19 +167,20 @@ class Client(discord.Client):
     async def on_reaction_add(self, reaction, user):
         logger.debug("Received reaction event for %d", reaction.message.id)
 
-        if user == self.user:
+        if user == self.user or reaction.message.author != self.user:
+            logger.debug("Auto-reaction or not reaction to mallard. Ignoring.")
             return
-        if reaction.message.author != self.user:
-            return
-        if reaction.emoji == "\U0001F5D1":
-            for relationship in self.query_authors:
-                if (
-                    relationship[0] == reaction.message.id
-                    and relationship[1] == user.id
-                ):
-                    logger.debug("Deleting query result for %d", reaction.message.id)
-                    await reaction.message.delete()
-                    return
+        if reaction.emoji == UNICODE_WASTEBASKET:
+            if (reaction.message.id, user.id) in self.query_owners.relationships:
+                logger.debug(
+                    "Deleting query result for %d at query owner's request",
+                    reaction.message.id,
+                )
+                await reaction.message.delete()
+                self.query_owners.remove((reaction.message.id, user.id))
+                return
+        logger.debug("Not wastebasket emoji or not from query owner. Ignoring.")
+        return
 
     async def search(self, query, message):
         logger.info(
@@ -211,10 +230,8 @@ class Client(discord.Client):
             embed.color = self.color
 
         response_message = await message.channel.send(embed=embed)
-        await response_message.add_reaction("\U0001F5D1")
-        self.query_authors.insert(0, (response_message.id, message.author.id))
-        if len(self.query_authors) > 50:
-            self.query_authors.pop()
+        await response_message.add_reaction(UNICODE_WASTEBASKET)
+        self.query_owners.push((response_message.id, message.author.id))
 
     async def bot_info(self, channel):
         logger.info("Displaying bot info.")
