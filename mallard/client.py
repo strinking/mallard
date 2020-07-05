@@ -86,6 +86,7 @@ class Client(discord.Client):
         every = config["ratelimit"]["per_seconds"]
         self.rl = duckduckgo.Ratelimit(count, every)
         self.rl_handle = ratelimit_handle
+        self.query_authors = []
 
     def __del__(self):
         self.rl_handle.close()
@@ -145,6 +146,20 @@ class Client(discord.Client):
         else:
             await self.search(query, message)
 
+    async def on_reaction_add(self, reaction, user):
+        logger.debug("Received reaction event for %d", reaction.message.id)
+
+        if user == self.user:
+            return
+        if reaction.message.author != self.user:
+            return
+        if reaction.emoji == "\U0001F5D1":
+            for relationship in self.query_authors:
+                if relationship[0] == reaction.message.id and relationship[1] == user.id:
+                    logger.debug("Deleting query result for %d", reaction.message.id)
+                    await reaction.message.delete()
+                    return
+
     async def search(self, query, message):
         logger.info(
             "Received DDG search from %s: '%s'", message.author.display_name, query
@@ -192,7 +207,11 @@ class Client(discord.Client):
             embed.description = result
             embed.color = self.color
 
-        await message.channel.send(embed=embed)
+        response_message = await message.channel.send(embed=embed)
+        await response_message.add_reaction("\U0001F5D1")
+        self.query_authors.insert(0, (response_message.id, message.author.id))
+        if len(self.query_authors) > 50:
+            self.query_authors.pop()
 
     async def bot_info(self, channel):
         logger.info("Displaying bot info.")
