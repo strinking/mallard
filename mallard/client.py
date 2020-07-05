@@ -155,7 +155,10 @@ class Client(discord.Client):
             return
         if reaction.emoji == "\U0001F5D1":
             for relationship in self.query_authors:
-                if relationship[0] == reaction.message.id and relationship[1] == user.id:
+                if (
+                    relationship[0] == reaction.message.id
+                    and relationship[1] == user.id
+                ):
                     logger.debug("Deleting query result for %d", reaction.message.id)
                     await reaction.message.delete()
                     return
