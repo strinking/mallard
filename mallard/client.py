@@ -83,6 +83,9 @@ class QueryOwners:
         self.relationships = []
         self.capacity = capacity
 
+    def __contains__(self, item):
+        return item in self.relationships
+
     def push(self, item):
         self.relationships.insert(0, item)
         if len(self.relationships) > self.capacity:
@@ -171,7 +174,7 @@ class Client(discord.Client):
             logger.debug("Auto-reaction or not reaction to mallard. Ignoring.")
             return
         if reaction.emoji == UNICODE_WASTEBASKET:
-            if (reaction.message.id, user.id) in self.query_owners.relationships:
+            if (reaction.message.id, user.id) in self.query_owners:
                 logger.debug(
                     "Deleting query result for %d at query owner's request",
                     reaction.message.id,
