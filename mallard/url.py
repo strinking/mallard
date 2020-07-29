@@ -40,5 +40,5 @@ async def try_follow_redirect(url: str, default: str = None) -> Optional[str]:
         try:
             async with session.get(url) as response:
                 return str(response.url)
-        except ValueError:
+        except (ValueError, aiohttp.client_exceptions.ClientConnectorSSLError):
             return default
