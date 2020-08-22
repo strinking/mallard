@@ -203,7 +203,7 @@ class Client(discord.Client):
             with self.rl.try_run(guild.id) as ok:
                 if ok:
                     # Ok to send query
-                    result = await duckduckgo.zci(query)
+                    zci_result = await duckduckgo.zci_with_type(query)
                 else:
                     # This guild has hit the rate limit
                     user = f"{message.author.name}#{message.author.discriminator}"
@@ -225,7 +225,10 @@ class Client(discord.Client):
             embed.description = f"```py\n{traceback.format_exc()}\n```"
             embed.color = discord.Color.red()
         else:
-            result = await try_follow_redirect(result, default=result)
+            (result, result_type) = zci_result
+            if result_type == 'exclusive':
+                logger.debug("Trying to follow %s", result)
+                result = await try_follow_redirect(result, default=result)
             query = query.replace("`", "'")
 
             embed.title = f"Query: `{query}`"
