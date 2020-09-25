@@ -192,7 +192,7 @@ class Client(discord.Client):
 
         # pylint: disable=assigning-non-slot
         embed = discord.Embed(type="rich")
-        embed.timestamp = datetime.now()
+        embed.timestamp = datetime.utcnow()
         embed.set_footer(
             text=f"Requested by {message.author.display_name}",
             icon_url=message.author.avatar_url,
