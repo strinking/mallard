@@ -13,7 +13,7 @@
 import yaml
 
 
-def load_config(path):
+def load_config(path) -> dict:
     with open(path, "r") as fh:
         obj = yaml.safe_load(fh)
 

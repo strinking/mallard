@@ -133,6 +133,9 @@ class Client(discord.Client):
         logger.info("Ready! \U0001f986")
 
     def _clean(self, message) -> Optional[str]:
+        """
+        Filter mention from query
+        """
         if message.author == self.user:
             return None
         if not message.content:

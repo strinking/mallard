@@ -10,12 +10,21 @@
 # WITHOUT ANY WARRANTY. See the LICENSE file for more details.
 #
 
+import logging
 
-def plural(n) -> str:
+logger = logging.getLogger("mallard")
+
+
+def plural(n: int) -> Optional[str]:
     if n == 1:
         return ""
-    else:
+    elif n > 0:
         return "s"
+    else:
+        logger.error("plural() passed value: %d, n should be a positive integer", n)
+        raise ValueError(
+            "n must be a positive integer"
+        )  # this will actuall never happen
 
 
 class DummyGuild:
